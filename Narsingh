@@ -1,0 +1,2254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hotel Management System</title>
+
+<style>
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --accent:#ff6b6b;
+  --muted:#9aa4b2;
+  --glass:rgba(255,255,255,0.03);
+  --radius:12px;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI";
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  min-height:100%;
+  background:linear-gradient(180deg,var(--bg),#071022);
+  color:#e6eef6;
+}
+
+.container{
+  max-width:1200px;
+  margin:32px auto;
+  padding:24px;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:20px;
+}
+
+.brand{
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+
+.logo{
+  width:56px;
+  height:56px;
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),#ff9a6b);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  color:#071022;
+}
+
+h1{
+  font-size:20px;
+  margin:0;
+}
+
+.small{
+  font-size:13px;
+}
+
+.top-actions{
+  display:flex;
+  gap:10px;
+}
+
+button{
+  background:var(--accent);
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  color:#071022;
+  font-weight:600;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+.secondary-btn{
+  background:transparent;
+  color:var(--muted);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:20px;
+}
+
+.card{
+  background:linear-gradient(
+    180deg,
+    var(--card),
+    rgba(255,255,255,.02)
+  );
+  padding:18px;
+  border-radius:var(--radius);
+  box-shadow:0 6px 20px rgba(2,6,23,.6);
+}
+
+.form-row{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:12px;
+}
+
+label{
+  font-size:13px;
+  color:var(--muted);
+}
+
+input,
+select,
+textarea{
+  padding:11px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.06);
+  background:var(--glass);
+  color:inherit;
+  width:100%;
+  outline:none;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--accent);
+}
+
+textarea{
+  min-height:100px;
+  resize:vertical;
+}
+
+select option{
+  background:#0b1220;
+  color:white;
+}
+
+.section-title{
+  font-weight:700;
+  margin-bottom:12px;
+}
+
+.rooms-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:420px;
+  overflow:auto;
+  padding-right:6px;
+}
+
+.room{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px;
+  border-radius:10px;
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,.01),
+    transparent
+  );
+}
+
+.room .meta{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.pill{
+  padding:6px 8px;
+  border-radius:999px;
+  font-weight:700;
+  font-size:12px;
+}
+
+.available{
+  background:rgba(34,197,94,.12);
+  color:#b9ffd6;
+}
+
+.occupied{
+  background:rgba(255,107,107,.12);
+  color:#ffd6d6;
+}
+
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+th,td{
+  text-align:left;
+  padding:12px;
+  border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:14px;
+}
+
+th{
+  font-size:13px;
+  color:var(--muted);
+  font-weight:600;
+}
+
+.controls{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.search{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.search input{
+  width:220px;
+}
+
+.kpi{
+  display:flex;
+  gap:12px;
+  margin-top:14px;
+}
+
+.kpi .tile{
+  flex:1;
+  padding:12px;
+  border-radius:10px;
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,.02),
+    transparent
+  );
+  text-align:center;
+}
+
+.kpi .num{
+  font-size:20px;
+  font-weight:800;
+}
+
+footer{
+  margin-top:22px;
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+}
+
+/* PAGE SYSTEM */
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+/* BOOKING PAGE */
+
+.booking-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.booking-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.booking-section{
+  margin-bottom:18px;
+}
+
+.booking-section h3{
+  margin-top:0;
+  font-size:16px;
+}
+
+.full-width{
+  grid-column:1/-1;
+}
+
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:20px;
+}
+
+.required{
+  color:#ff6b6b;
+}
+
+.booking-id-box{
+  padding:12px;
+  border-radius:8px;
+  background:rgba(255,107,107,.08);
+  margin-bottom:18px;
+}
+
+.booking-id-box strong{
+  color:#ff9a6b;
+}
+
+.status-paid{
+  color:#b9ffd6;
+}
+
+.status-pending{
+  color:#ffd6a8;
+}
+
+/* =====================================================
+   ONLINE PAYMENT QR
+===================================================== */
+
+.online-payment{
+  display:none;
+  margin-top:14px;
+  padding:18px;
+  border-radius:12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  text-align:center;
+}
+
+.online-payment.show{
+  display:block;
+}
+
+.online-payment-title{
+  font-size:16px;
+  font-weight:800;
+  margin-bottom:6px;
+  color:#fff;
+}
+
+.online-payment-subtitle{
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:14px;
+}
+
+.online-payment img{
+  display:block;
+  width:230px;
+  height:230px;
+  max-width:100%;
+  object-fit:contain;
+  margin:0 auto;
+  padding:8px;
+  background:#fff;
+  border-radius:12px;
+}
+
+.online-payment-note{
+  color:#b9ffd6;
+  font-size:12px;
+  margin-top:12px;
+  line-height:1.5;
+}
+
+.upi-badge{
+  display:inline-block;
+  margin-top:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(34,197,94,.12);
+  color:#b9ffd6;
+  font-size:12px;
+  font-weight:700;
+}
+
+/* MOBILE */
+
+@media(max-width:880px){
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .search input{
+    width:140px;
+  }
+
+  .booking-grid{
+    grid-template-columns:1fr;
+  }
+
+  .full-width{
+    grid-column:auto;
+  }
+}
+
+@media(max-width:600px){
+
+  .container{
+    margin:10px auto;
+    padding:12px;
+  }
+
+  header,
+  .booking-header{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px;
+  }
+
+  .top-actions{
+    width:100%;
+  }
+
+  .top-actions button{
+    flex:1;
+  }
+
+  .kpi{
+    flex-direction:column;
+  }
+
+  .online-payment img{
+    width:200px;
+    height:200px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- =====================================================
+     DASHBOARD PAGE
+===================================================== -->
+
+<div id="dashboardPage" class="page active">
+
+<header>
+
+  <div class="brand">
+
+    <div class="logo">HM</div>
+
+    <div>
+      <h1>Hotel Management</h1>
+
+      <div class="small">
+        Manage rooms and bookings
+      </div>
+    </div>
+
+  </div>
+
+  <div class="top-actions">
+
+    <button id="new-book">
+      + New Booking
+    </button>
+
+    <button id="export">
+      Export
+    </button>
+
+  </div>
+
+</header>
+
+
+<div class="grid">
+
+<!-- =====================================================
+     ROOM MANAGEMENT
+===================================================== -->
+
+<aside class="card">
+
+  <div class="section-title">
+    Add / Manage Room
+  </div>
+
+  <div class="form-row">
+
+    <label>Room Number</label>
+
+    <input
+      id="room-number"
+      type="text"
+      placeholder="Example: 101"
+    >
+
+  </div>
+
+  <div class="form-row">
+
+    <label>Type</label>
+
+    <select id="room-type">
+
+      <option>Single</option>
+      <option>Double</option>
+      <option>Deluxe</option>
+      <option>Suite</option>
+
+    </select>
+
+  </div>
+
+  <div class="form-row">
+
+    <label>Price per night</label>
+
+    <input
+      id="room-price"
+      type="number"
+      placeholder="Example: 2500"
+    >
+
+  </div>
+
+  <div class="form-row">
+
+    <label>Status</label>
+
+    <select id="room-status">
+
+      <option>Available</option>
+      <option>Occupied</option>
+
+    </select>
+
+  </div>
+
+  <div style="display:flex;gap:8px;margin-top:10px">
+
+    <button id="add-room">
+      Add Room
+    </button>
+
+    <button
+      id="clear-room"
+      class="secondary-btn"
+    >
+      Clear
+    </button>
+
+  </div>
+
+  <div
+    class="section-title"
+    style="margin-top:18px"
+  >
+    Rooms
+  </div>
+
+  <div
+    class="rooms-list"
+    id="rooms-list"
+  ></div>
+
+</aside>
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<main>
+
+  <div class="card">
+
+    <div
+      style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:15px;
+      "
+    >
+
+      <div class="search">
+
+        <input
+          id="searchInput"
+          placeholder="Search by name, room or ID"
+        >
+
+      </div>
+
+      <div class="controls">
+
+        <div class="small">
+          Today:
+          <strong id="today"></strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- KPI -->
+
+    <div class="kpi">
+
+      <div class="tile">
+
+        <div class="small">
+          Rooms
+        </div>
+
+        <div
+          class="num"
+          id="roomsKPI"
+        >
+          0
+        </div>
+
+      </div>
+
+      <div class="tile">
+
+        <div class="small">
+          Occupied
+        </div>
+
+        <div
+          class="num"
+          id="occupiedKPI"
+        >
+          0
+        </div>
+
+      </div>
+
+      <div class="tile">
+
+        <div class="small">
+          Revenue Today
+        </div>
+
+        <div
+          class="num"
+          id="revenueKPI"
+        >
+          ₹0
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- BOOKINGS TABLE -->
+
+    <div class="table-wrap">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>Booking ID</th>
+            <th>Guest</th>
+            <th>Room</th>
+            <th>Check-in</th>
+            <th>Check-out</th>
+            <th>Amount</th>
+            <th>Status</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="booking-table"></tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</main>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+     GUEST DETAILS / BOOKING PAGE
+===================================================== -->
+
+<div
+  id="bookingPage"
+  class="page"
+>
+
+  <div class="booking-header">
+
+    <div class="brand">
+
+      <div class="logo">HM</div>
+
+      <div>
+
+        <h1>
+          Guest Details & Booking
+        </h1>
+
+        <div class="small">
+          Create a new hotel reservation
+        </div>
+
+      </div>
+
+    </div>
+
+    <button
+      id="backDashboard"
+      class="secondary-btn"
+    >
+      ← Back to Dashboard
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="booking-id-box">
+
+      Booking ID:
+      <strong id="bookingId"></strong>
+
+    </div>
+
+
+    <div class="booking-grid">
+
+
+      <!-- =================================================
+           GUEST INFORMATION
+      ================================================== -->
+
+      <div class="booking-section">
+
+        <h3>
+          Guest Information
+        </h3>
+
+        <div class="form-row">
+
+          <label>
+            Guest Name
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="guestName"
+            type="text"
+            placeholder="Enter guest full name"
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            Phone Number
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="guestPhone"
+            type="tel"
+            placeholder="Enter phone number"
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            Email
+          </label>
+
+          <input
+            id="guestEmail"
+            type="email"
+            placeholder="guest@example.com"
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            Address
+          </label>
+
+          <textarea
+            id="guestAddress"
+            placeholder="Guest address"
+          ></textarea>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           ROOM INFORMATION
+      ================================================== -->
+
+      <div class="booking-section">
+
+        <h3>
+          Room & Stay
+        </h3>
+
+        <div class="form-row">
+
+          <label>
+            Room Number
+            <span class="required">*</span>
+          </label>
+
+          <select id="bookingRoom">
+
+            <option value="">
+              Select Room
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            Check-in
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="checkIn"
+            type="date"
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            Check-out
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="checkOut"
+            type="date"
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            Number of Guests
+          </label>
+
+          <input
+            id="numberGuests"
+            type="number"
+            min="1"
+            value="1"
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           ID INFORMATION
+      ================================================== -->
+
+      <div class="booking-section">
+
+        <h3>
+          Identification
+        </h3>
+
+        <div class="form-row">
+
+          <label>
+            ID Proof Type
+          </label>
+
+          <select id="idProofType">
+
+            <option>Aadhaar Card</option>
+            <option>Passport</option>
+            <option>Driving Licence</option>
+            <option>Voter ID</option>
+            <option>Other</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            ID Proof Number
+          </label>
+
+          <input
+            id="idProofNumber"
+            type="text"
+            placeholder="Enter ID number"
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           PAYMENT
+      ================================================== -->
+
+      <div class="booking-section">
+
+        <h3>
+          Payment
+        </h3>
+
+        <div class="form-row">
+
+          <label>
+            Total Amount
+            <span class="required">*</span>
+          </label>
+
+          <input
+            id="bookingAmount"
+            type="number"
+            placeholder="Enter amount"
+          >
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            Payment Status
+          </label>
+
+          <select id="paymentStatus">
+
+            <option>Pending</option>
+            <option>Paid</option>
+            <option>Partially Paid</option>
+
+          </select>
+
+        </div>
+
+        <div class="form-row">
+
+          <label>
+            Payment Method
+          </label>
+
+          <select id="paymentMethod">
+
+            <option>Cash</option>
+            <option>UPI</option>
+            <option>Card</option>
+            <option>Bank Transfer</option>
+
+          </select>
+
+        </div>
+
+
+        <!-- =================================================
+             QR CODE - SHOWS WHEN UPI IS SELECTED
+        ================================================== -->
+
+        <div
+          id="onlinePayment"
+          class="online-payment"
+        >
+
+          <div class="online-payment-title">
+            📱 Online Payment
+          </div>
+
+          <div class="online-payment-subtitle">
+            Scan the QR code below to pay using UPI
+          </div>
+
+          <img
+            src="qr-code.jpeg"
+            alt="Hotel Online Payment QR Code"
+          >
+
+          <div class="upi-badge">
+            UPI PAYMENT
+          </div>
+
+          <div class="online-payment-note">
+            Open your UPI app and scan this QR code
+            to complete the payment.
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           SPECIAL REQUESTS
+      ================================================== -->
+
+      <div class="booking-section full-width">
+
+        <h3>
+          Special Requests
+        </h3>
+
+        <textarea
+          id="specialRequests"
+          placeholder="Enter any special requests from the guest..."
+        ></textarea>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         BUTTONS
+    ================================================== -->
+
+    <div class="form-actions">
+
+      <button
+        id="cancelBooking"
+        class="secondary-btn"
+      >
+        Cancel
+      </button>
+
+      <button id="saveBooking">
+        Save Booking
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<footer>
+  Hotel Management System
+</footer>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   DATA
+===================================================== */
+
+let rooms =
+  JSON.parse(
+    localStorage.getItem("hotelRooms")
+  ) || [];
+
+let bookings =
+  JSON.parse(
+    localStorage.getItem("hotelBookings")
+  ) || [];
+
+
+/* =====================================================
+   PAGE NAVIGATION
+===================================================== */
+
+const dashboardPage =
+  document.getElementById("dashboardPage");
+
+const bookingPage =
+  document.getElementById("bookingPage");
+
+
+function showDashboard(){
+
+  bookingPage.classList.remove("active");
+
+  dashboardPage.classList.add("active");
+
+  renderRooms();
+  renderBookings();
+  updateKPI();
+
+}
+
+
+function showBookingPage(){
+
+  dashboardPage.classList.remove("active");
+
+  bookingPage.classList.add("active");
+
+  generateBookingID();
+
+  populateBookingRooms();
+
+  updatePaymentQR();
+
+}
+
+
+/* New Booking */
+
+document
+  .getElementById("new-book")
+  .addEventListener(
+    "click",
+    showBookingPage
+  );
+
+
+/* Back */
+
+document
+  .getElementById("backDashboard")
+  .addEventListener(
+    "click",
+    showDashboard
+  );
+
+
+document
+  .getElementById("cancelBooking")
+  .addEventListener(
+    "click",
+    showDashboard
+  );
+
+
+/* =====================================================
+   DATE
+===================================================== */
+
+const today =
+  new Date();
+
+document.getElementById("today").innerText =
+  today.toLocaleDateString(
+    "en-IN",
+    {
+      day:"2-digit",
+      month:"short",
+      year:"numeric"
+    }
+  );
+
+
+/* =====================================================
+   ROOM MANAGEMENT
+===================================================== */
+
+const addBtn =
+  document.getElementById("add-room");
+
+
+addBtn.addEventListener(
+  "click",
+  () => {
+
+    const num =
+      document
+        .getElementById("room-number")
+        .value
+        .trim();
+
+    const type =
+      document
+        .getElementById("room-type")
+        .value;
+
+    const price =
+      document
+        .getElementById("room-price")
+        .value
+        .trim();
+
+    const status =
+      document
+        .getElementById("room-status")
+        .value;
+
+
+    if(!num || !price){
+
+      alert(
+        "Please fill room number and price."
+      );
+
+      return;
+
+    }
+
+
+    const exists =
+      rooms.some(
+        room =>
+          room.number === num
+      );
+
+
+    if(exists){
+
+      alert(
+        "This room already exists."
+      );
+
+      return;
+
+    }
+
+
+    rooms.push({
+
+      number:num,
+      type:type,
+      price:Number(price),
+      status:status
+
+    });
+
+
+    saveRooms();
+
+    renderRooms();
+
+    updateKPI();
+
+    populateBookingRooms();
+
+
+    document
+      .getElementById("room-number")
+      .value = "";
+
+    document
+      .getElementById("room-price")
+      .value = "";
+
+  }
+);
+
+
+/* Clear Room */
+
+document
+  .getElementById("clear-room")
+  .onclick = () => {
+
+    document
+      .getElementById("room-number")
+      .value = "";
+
+    document
+      .getElementById("room-price")
+      .value = "";
+
+  };
+
+
+function saveRooms(){
+
+  localStorage.setItem(
+    "hotelRooms",
+    JSON.stringify(rooms)
+  );
+
+}
+
+
+/* =====================================================
+   RENDER ROOMS
+===================================================== */
+
+function renderRooms(){
+
+  const roomList =
+    document.getElementById(
+      "rooms-list"
+    );
+
+  roomList.innerHTML = "";
+
+
+  if(rooms.length === 0){
+
+    roomList.innerHTML =
+      `<div class="small"
+        style="color:var(--muted)">
+        No rooms added yet.
+      </div>`;
+
+    return;
+
+  }
+
+
+  rooms.forEach(
+    room => {
+
+      const div =
+        document.createElement("div");
+
+      div.className = "room";
+
+
+      div.innerHTML = `
+
+        <div class="meta">
+
+          <div>
+
+            <div style="font-weight:800">
+              ${escapeHTML(room.number)}
+            </div>
+
+            <div class="small">
+              ${escapeHTML(room.type)}
+            </div>
+
+          </div>
+
+          <div class="small">
+            ₹${room.price.toLocaleString("en-IN")}
+            / night
+          </div>
+
+        </div>
+
+        <div class="pill ${
+          room.status === "Available"
+            ? "available"
+            : "occupied"
+        }">
+
+          ${escapeHTML(room.status)}
+
+        </div>
+
+      `;
+
+
+      roomList.appendChild(div);
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   BOOKING PAGE
+===================================================== */
+
+function generateBookingID(){
+
+  const id =
+    "BK-" +
+    Date.now()
+      .toString()
+      .slice(-6);
+
+  document
+    .getElementById("bookingId")
+    .innerText = id;
+
+}
+
+
+/* =====================================================
+   POPULATE AVAILABLE ROOMS
+===================================================== */
+
+function populateBookingRooms(){
+
+  const select =
+    document.getElementById(
+      "bookingRoom"
+    );
+
+  select.innerHTML =
+    `<option value="">
+      Select Room
+    </option>`;
+
+
+  rooms
+    .filter(
+      room =>
+        room.status === "Available"
+    )
+    .forEach(
+      room => {
+
+        const option =
+          document.createElement(
+            "option"
+          );
+
+        option.value =
+          room.number;
+
+        option.textContent =
+          `${room.number} - ${
+            room.type
+          } - ₹${
+            room.price
+          }/night`;
+
+        select.appendChild(
+          option
+        );
+
+      }
+    );
+
+}
+
+
+/* =====================================================
+   AUTOMATIC AMOUNT CALCULATION
+===================================================== */
+
+document
+  .getElementById("bookingRoom")
+  .addEventListener(
+    "change",
+    calculateAmount
+  );
+
+
+document
+  .getElementById("checkIn")
+  .addEventListener(
+    "change",
+    calculateAmount
+  );
+
+
+document
+  .getElementById("checkOut")
+  .addEventListener(
+    "change",
+    calculateAmount
+  );
+
+
+function calculateAmount(){
+
+  const roomNumber =
+    document
+      .getElementById("bookingRoom")
+      .value;
+
+  const checkIn =
+    document
+      .getElementById("checkIn")
+      .value;
+
+  const checkOut =
+    document
+      .getElementById("checkOut")
+      .value;
+
+
+  if(
+    !roomNumber ||
+    !checkIn ||
+    !checkOut
+  ){
+
+    return;
+
+  }
+
+
+  const room =
+    rooms.find(
+      r =>
+        r.number === roomNumber
+    );
+
+
+  if(!room){
+
+    return;
+
+  }
+
+
+  const start =
+    new Date(checkIn);
+
+  const end =
+    new Date(checkOut);
+
+
+  const milliseconds =
+    end - start;
+
+
+  const nights =
+    Math.ceil(
+      milliseconds /
+      (1000 * 60 * 60 * 24)
+    );
+
+
+  if(nights > 0){
+
+    const amount =
+      nights * room.price;
+
+    document
+      .getElementById(
+        "bookingAmount"
+      )
+      .value = amount;
+
+  }
+
+}
+
+
+/* =====================================================
+   ONLINE PAYMENT QR
+===================================================== */
+
+const paymentMethod =
+  document.getElementById(
+    "paymentMethod"
+  );
+
+const onlinePayment =
+  document.getElementById(
+    "onlinePayment"
+  );
+
+
+function updatePaymentQR(){
+
+  if(paymentMethod.value === "UPI"){
+
+    onlinePayment.classList.add("show");
+
+  }else{
+
+    onlinePayment.classList.remove("show");
+
+  }
+
+}
+
+
+paymentMethod.addEventListener(
+  "change",
+  updatePaymentQR
+);
+
+
+/* =====================================================
+   SAVE BOOKING
+===================================================== */
+
+document
+  .getElementById("saveBooking")
+  .addEventListener(
+    "click",
+    saveBooking
+  );
+
+
+function saveBooking(){
+
+  const bookingId =
+    document
+      .getElementById("bookingId")
+      .innerText;
+
+  const guestName =
+    document
+      .getElementById("guestName")
+      .value
+      .trim();
+
+  const phone =
+    document
+      .getElementById("guestPhone")
+      .value
+      .trim();
+
+  const email =
+    document
+      .getElementById("guestEmail")
+      .value
+      .trim();
+
+  const address =
+    document
+      .getElementById("guestAddress")
+      .value
+      .trim();
+
+  const room =
+    document
+      .getElementById("bookingRoom")
+      .value;
+
+  const checkIn =
+    document
+      .getElementById("checkIn")
+      .value;
+
+  const checkOut =
+    document
+      .getElementById("checkOut")
+      .value;
+
+  const numberGuests =
+    document
+      .getElementById("numberGuests")
+      .value;
+
+  const idProofType =
+    document
+      .getElementById("idProofType")
+      .value;
+
+  const idProofNumber =
+    document
+      .getElementById("idProofNumber")
+      .value
+      .trim();
+
+  const amount =
+    document
+      .getElementById("bookingAmount")
+      .value;
+
+  const paymentStatus =
+    document
+      .getElementById("paymentStatus")
+      .value;
+
+  const paymentMethod =
+    document
+      .getElementById("paymentMethod")
+      .value;
+
+  const specialRequests =
+    document
+      .getElementById("specialRequests")
+      .value
+      .trim();
+
+
+  /* Validation */
+
+  if(
+    !guestName ||
+    !phone ||
+    !room ||
+    !checkIn ||
+    !checkOut ||
+    !amount
+  ){
+
+    alert(
+      "Please fill all required fields."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    new Date(checkOut)
+    <=
+    new Date(checkIn)
+  ){
+
+    alert(
+      "Check-out date must be after check-in date."
+    );
+
+    return;
+
+  }
+
+
+  /* Create booking */
+
+  const booking = {
+
+    id:bookingId,
+
+    guest:guestName,
+
+    phone:phone,
+
+    email:email,
+
+    address:address,
+
+    room:room,
+
+    checkIn:checkIn,
+
+    checkOut:checkOut,
+
+    guests:Number(numberGuests),
+
+    idProofType:idProofType,
+
+    idProofNumber:idProofNumber,
+
+    amount:Number(amount),
+
+    paymentStatus:paymentStatus,
+
+    paymentMethod:paymentMethod,
+
+    specialRequests:specialRequests,
+
+    status:
+      paymentStatus === "Paid"
+        ? "Confirmed"
+        : "Pending"
+
+  };
+
+
+  bookings.push(booking);
+
+
+  localStorage.setItem(
+    "hotelBookings",
+    JSON.stringify(bookings)
+  );
+
+
+  /* Mark room occupied */
+
+  const selectedRoom =
+    rooms.find(
+      r =>
+        r.number === room
+    );
+
+
+  if(selectedRoom){
+
+    selectedRoom.status =
+      "Occupied";
+
+    saveRooms();
+
+  }
+
+
+  alert(
+    "Booking saved successfully!"
+  );
+
+
+  clearBookingForm();
+
+  showDashboard();
+
+}
+
+
+/* =====================================================
+   RENDER BOOKINGS
+===================================================== */
+
+function renderBookings(){
+
+  const table =
+    document.getElementById(
+      "booking-table"
+    );
+
+  table.innerHTML = "";
+
+
+  if(bookings.length === 0){
+
+    table.innerHTML = `
+
+      <tr>
+
+        <td
+          colspan="7"
+          style="
+            text-align:center;
+            color:var(--muted);
+          "
+        >
+          No bookings available.
+        </td>
+
+      </tr>
+
+    `;
+
+    return;
+
+  }
+
+
+  bookings.forEach(
+    booking => {
+
+      const row =
+        document.createElement("tr");
+
+
+      row.innerHTML = `
+
+        <td>
+          <strong>
+            ${escapeHTML(booking.id)}
+          </strong>
+        </td>
+
+        <td>
+          ${escapeHTML(booking.guest)}
+        </td>
+
+        <td>
+          ${escapeHTML(booking.room)}
+        </td>
+
+        <td>
+          ${formatDate(booking.checkIn)}
+        </td>
+
+        <td>
+          ${formatDate(booking.checkOut)}
+        </td>
+
+        <td>
+          ₹${Number(
+            booking.amount
+          ).toLocaleString("en-IN")}
+        </td>
+
+        <td>
+
+          <span class="pill ${
+            booking.status === "Confirmed"
+              ? "available"
+              : "occupied"
+          }">
+
+            ${escapeHTML(
+              booking.status
+            )}
+
+          </span>
+
+        </td>
+
+      `;
+
+
+      table.appendChild(row);
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   KPI
+===================================================== */
+
+function updateKPI(){
+
+  const roomsCount =
+    rooms.length;
+
+  const occupied =
+    rooms.filter(
+      room =>
+        room.status === "Occupied"
+    ).length;
+
+
+  const todayString =
+    new Date()
+      .toISOString()
+      .split("T")[0];
+
+
+  const revenue =
+    bookings
+      .filter(
+        booking =>
+          booking.checkIn ===
+          todayString
+      )
+      .reduce(
+        (sum, booking) =>
+          sum +
+          Number(
+            booking.amount
+          ),
+        0
+      );
+
+
+  document
+    .getElementById("roomsKPI")
+    .innerText =
+      roomsCount;
+
+
+  document
+    .getElementById("occupiedKPI")
+    .innerText =
+      occupied;
+
+
+  document
+    .getElementById("revenueKPI")
+    .innerText =
+      "₹" +
+      revenue.toLocaleString(
+        "en-IN"
+      );
+
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+document
+  .getElementById("searchInput")
+  .addEventListener(
+    "input",
+    function(){
+
+      const filter =
+        this.value
+          .toLowerCase()
+          .trim();
+
+
+      const rows =
+        document.querySelectorAll(
+          "#booking-table tr"
+        );
+
+
+      rows.forEach(
+        row => {
+
+          const text =
+            row.innerText
+              .toLowerCase();
+
+          row.style.display =
+            text.includes(filter)
+              ? ""
+              : "none";
+
+        }
+      );
+
+    }
+  );
+
+
+/* =====================================================
+   EXPORT BOOKINGS
+===================================================== */
+
+document
+  .getElementById("export")
+  .addEventListener(
+    "click",
+    () => {
+
+      if(bookings.length === 0){
+
+        alert(
+          "There are no bookings to export."
+        );
+
+        return;
+
+      }
+
+
+      const headers = [
+
+        "Booking ID",
+        "Guest",
+        "Phone",
+        "Email",
+        "Room",
+        "Check-in",
+        "Check-out",
+        "Guests",
+        "Amount",
+        "Payment Status",
+        "Payment Method",
+        "Status"
+
+      ];
+
+
+      const rows =
+        bookings.map(
+          booking => [
+
+            booking.id,
+            booking.guest,
+            booking.phone,
+            booking.email,
+            booking.room,
+            booking.checkIn,
+            booking.checkOut,
+            booking.guests,
+            booking.amount,
+            booking.paymentStatus,
+            booking.paymentMethod,
+            booking.status
+
+          ]
+        );
+
+
+      const csv = [
+
+        headers,
+
+        ...rows
+
+      ]
+      .map(
+        row =>
+          row
+            .map(
+              value =>
+                `"${String(value || "")
+                  .replace(/"/g,'""')}"`
+            )
+            .join(",")
+      )
+      .join("\n");
+
+
+      const blob =
+        new Blob(
+          [csv],
+          {
+            type:
+              "text/csv;charset=utf-8;"
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      const link =
+        document.createElement("a");
+
+      link.href = url;
+
+      link.download =
+        "hotel-bookings.csv";
+
+      link.click();
+
+      URL.revokeObjectURL(url);
+
+    }
+  );
+
+
+/* =====================================================
+   CLEAR BOOKING FORM
+===================================================== */
+
+function clearBookingForm(){
+
+  const fields = [
+
+    "guestName",
+    "guestPhone",
+    "guestEmail",
+    "guestAddress",
+    "checkIn",
+    "checkOut",
+    "idProofNumber",
+    "bookingAmount",
+    "specialRequests"
+
+  ];
+
+
+  fields.forEach(
+    id => {
+
+      document
+        .getElementById(id)
+        .value = "";
+
+    }
+  );
+
+
+  document
+    .getElementById("bookingRoom")
+    .value = "";
+
+
+  document
+    .getElementById("numberGuests")
+    .value = "1";
+
+
+  document
+    .getElementById("paymentStatus")
+    .value = "Pending";
+
+
+  document
+    .getElementById("paymentMethod")
+    .value = "Cash";
+
+
+  updatePaymentQR();
+
+}
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function formatDate(date){
+
+  if(!date){
+    return "-";
+  }
+
+  return new Date(date)
+    .toLocaleDateString(
+      "en-IN",
+      {
+        day:"2-digit",
+        month:"short",
+        year:"numeric"
+      }
+    );
+
+}
+
+
+/* Prevent HTML injection */
+
+function escapeHTML(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+renderRooms();
+renderBookings();
+updateKPI();
+updatePaymentQR();
+
+</script>
+
+</body>
+</html>
